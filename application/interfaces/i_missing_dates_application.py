@@ -1,6 +1,8 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 
 
 class IMissingDatesApplication(ABC):
 
-    pass
+    @abstractmethod
+    def get_initial_and_missing_dates(self):
+        pass
