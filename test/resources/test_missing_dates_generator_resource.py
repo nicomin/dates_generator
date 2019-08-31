@@ -10,9 +10,8 @@ from injector import Binder
 
 from application.dates_application_exception import DatesApplicationException
 from application.interfaces.i_missing_dates_application import IMissingDatesApplication
-from application.missing_dates_application import MissingDatesApplication
-from entities.dates_generator import DatesGenerator
 from resources.missing_dates_generator_resource import MissingDatesGeneratorResource
+from test.factories.time_period_dummy_factory import TimePeriodDummyFactory
 
 
 class TestMissingDatesGeneratorResource(TestCase):
@@ -32,7 +31,7 @@ class TestMissingDatesGeneratorResource(TestCase):
         self.client = app.test_client()
 
         self.endpoint = '/challenge/missing-dates'
-        self.dates_generator = DatesGenerator(1, '1997-09-01', '2013-05-01', ["1997-09-01", "1998-01-01", "1998-02-01"])
+        self.dates_generator = TimePeriodDummyFactory().create()
         self.dates_generator.output_dates = [datetime(2015, 8, 6), datetime(2016, 7, 9)]
 
     def test_get_when_application_exception_then_return_application_error_response(self):
@@ -61,7 +60,7 @@ class TestMissingDatesGeneratorResource(TestCase):
 
         self.assertEqual(200, response.status_code)
         self.assertEqual(1, json_response['id'])
-        self.assertEqual('1997-09-01', json_response['fechaCreacion'])
-        self.assertEqual('2013-05-01', json_response['fechaFin'])
-        self.assertEqual(["1997-09-01", "1998-01-01", "1998-02-01"], json_response['fechas'])
+        self.assertEqual('1969-03-01', json_response['fechaCreacion'])
+        self.assertEqual('1970-01-01', json_response['fechaFin'])
+        self.assertEqual(['1969-03-01', '1969-05-01', '1969-09-01', '1970-01-01'], json_response['fechas'])
         self.assertEqual(['2015-08-06', '2016-07-09'], json_response['fechasFaltantes'])

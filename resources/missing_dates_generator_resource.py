@@ -11,7 +11,7 @@ class MissingDatesGeneratorResource(Resource):
         'id':  fields.Integer,
         'fechaCreacion': fields.String(attribute='begin_date'),
         'fechaFin': fields.String(attribute='end_date'),
-        'fechas': fields.List(fields.String, attribute='input_dates'),
+        'fechas': fields.List(DateField, attribute='input_dates'),
         'fechasFaltantes': fields.List(DateField, attribute='output_dates')
     }
 
