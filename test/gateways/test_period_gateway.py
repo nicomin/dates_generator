@@ -5,7 +5,7 @@ from unittest.mock import MagicMock
 from infra.infrastructure_exception import InfrastructureException
 from infra.interfaces.i_previred_api import IPreviredApi
 from gateways.periods_gateway import PeriodsGateway
-from gateways.repository_exception import GatewayException
+from gateways.gateway_exception import GatewayException
 
 
 class TestPreviredGateway(TestCase):

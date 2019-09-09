@@ -9,7 +9,7 @@ from flask_restful import Api
 from injector import Binder
 
 from application.dates_application_exception import DatesApplicationException
-from application.interfaces.i_missing_dates_application import IMissingDatesApplication
+from application.interfaces.i_missing_dates_application import IDatesApplication
 from resources.missing_dates_generator_resource import MissingDatesGeneratorResource
 from test.factories.time_period_dummy_factory import TimePeriodDummyFactory
 
@@ -21,10 +21,10 @@ class TestMissingDatesGeneratorResource(TestCase):
         api = Api(app)
         api.default_mediatype = 'application/json'
         api.add_resource(MissingDatesGeneratorResource, '/challenge/missing-dates')
-        self.app = MagicMock(IMissingDatesApplication)
+        self.app = MagicMock(IDatesApplication)
 
         def injector_modules(binder: Binder):
-            binder.bind(IMissingDatesApplication, self.app)
+            binder.bind(IDatesApplication, self.app)
 
         FlaskInjector(app=app, modules=[injector_modules])
         app.testing = True
@@ -41,7 +41,6 @@ class TestMissingDatesGeneratorResource(TestCase):
         json_response = json.loads(response.get_data(as_text=True))
 
         self.assertEqual(503, response.status_code)
-        self.assertEqual('Error generando las fechas', json_response['ERROR'])
 
     def test_get_when_unhandled_exception_then_return_generic_response_about_an_error(self):
         self.app.get_initial_and_missing_dates.side_effect = NameError
@@ -50,7 +49,6 @@ class TestMissingDatesGeneratorResource(TestCase):
         json_response = json.loads(response.get_data(as_text=True))
 
         self.assertEqual(500, response.status_code)
-        self.assertEqual('Error no controlado', json_response['ERROR'])
 
     def test_get_when_application_response_is_ok_then_return_it_as_json(self):
         self.app.get_initial_and_missing_dates.return_value = self.dates_generator

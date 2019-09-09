@@ -1,12 +1,15 @@
+from injector import inject
+
 from utils.date_utils import DateUtils
 from application.dates_application_exception import DatesApplicationException
 from application.dates_generator import DatesGenerator
-from application.interfaces.i_missing_dates_application import IMissingDatesApplication
+from application.interfaces.i_missing_dates_application import IDatesApplication
 from gateways.interfaces.i_previred_gateway import IPeriodsGateway
-from gateways.repository_exception import GatewayException
+from gateways.gateway_exception import GatewayException
 
 
-class DatesApplication(IMissingDatesApplication):
+class DatesApplication(IDatesApplication):
+    @inject
     def __init__(self, period_gateway: IPeriodsGateway):
         self.period_gateway = period_gateway
         self.date_utils = DateUtils()
@@ -16,7 +19,6 @@ class DatesApplication(IMissingDatesApplication):
             time_period = self.period_gateway.get()
             period_dates = self._get_period_dates(time_period.begin_date, time_period.end_date)
             time_period.output_dates = period_dates
-            time_period.remove_already_loaded_period_dates()
         except GatewayException as e:
             raise DatesApplicationException() from e
         else:
